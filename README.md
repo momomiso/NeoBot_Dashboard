@@ -30,6 +30,8 @@ git clone https://github.com/momomiso/NeoBot_Dashboard.git
 
 **_<span style="color: #639bff; ">必须先构建</span>[NeoBot](https://github.com/SuperQuail/NeoBot)<span style="color: #639bff; ">后才能正常启动</span>_**
 
+服务端防火墙放行8083端口
+
 回到 NeoBot 根目录并启动：
 ```text
 cd /root/neobot
