@@ -1,5 +1,5 @@
 name = "dashboard"
-version = "0.9.0"
+version = "0.9.1"
 
 # repo字段
 repo = "https://github.com/momomiso/NeoBot_Dashboard" 
@@ -12,7 +12,7 @@ host = "0.0.0.0"
 port = 8083
 
 # 访问token(默认留空)。
-# 也可以在此显式指定一个固定值,该值会覆盖文件plugins_data/dashboard/access_token.txt里的token。
+# 也可以在此显式指定一个固定值,该值会覆盖plugins_data/dashboard/access_token.txt文件里的token。
 access_token = ""
 
 # 同一个 IP 在10分钟内最多输错3次
