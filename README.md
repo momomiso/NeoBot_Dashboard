@@ -20,10 +20,10 @@
 cd /root/neobot/app/data/plugins
 ```
 
-下载或复制本插件到 `plugins` 目录：
+下载或复制本插件到 `dashboard` 目录：
 
 ```text
-git clone https://github.com/momomiso/NeoBot_Dashboard.git
+git clone https://github.com/momomiso/NeoBot_Dashboard.git dashboard
 ```
 ## 启动方法
 
@@ -60,7 +60,7 @@ http://服务器IP:8083
 配置文件位置：
 
 ```text
-NeoBot_Dashboard/plugin.toml
+dashboard/plugin.toml
 ```
 
 ## 卸载方法
@@ -71,10 +71,10 @@ NeoBot_Dashboard/plugin.toml
 停止 NeoBot 后，删除插件目录：
 
 ```text
-rm -rf /root/neobot/app/data/plugins/NeoBot_Dashboard
+rm -rf /root/neobot/app/data/plugins/dashboard
 ```
 
-如果需要同时删除插件数据，可以删除对应plugins_data目录中的 NeoBot_Dashboard 数据。
+如果需要同时删除插件数据，可以删除对应plugins_data目录中的 dashboard 数据。
 
 ---
 
