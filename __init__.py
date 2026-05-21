@@ -99,7 +99,7 @@ class DashboardPlugin(BasePlugin):
         self._latency_task: asyncio.Task | None = None
         # 心跳延迟
         self._latency_history: collections.deque[tuple[float, int | None]] = collections.deque(maxlen=60)
-        # API调用计数
+        # API调用统计
         self._api_call_counts: dict[str, int] = {}
         # 活跃用户
         self._user_activity: dict[int, dict[str, Any]] = {}
