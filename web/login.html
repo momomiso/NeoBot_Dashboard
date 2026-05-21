@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>登录 · NeoBot Dashboard</title>
+  <link rel="icon" type="image/webp" href="/favicon.ico?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue-50:  #f0f9ff;
+      --blue-100: #e0f2fe;
+      --blue-400: #7dd3fc;
+      --blue-500: #38bdf8;
+      --blue-600: #0ea5e9;
+      --blue-700: #0284c7;
+      --blue-900: #075985;
+      --bg:          #f7fcff;
+      --bg-elev:     #ffffff;
+      --border:      #d7eefb;
+      --border-soft: #edf8fe;
+
+      --text:       #1f3a4d;
+      --text-sub:   #5d7f96;
+      --text-muted: #9ab4c4;
+
+      --primary:       var(--blue-500);
+      --primary-soft:  var(--blue-50);
+      --primary-hover: var(--blue-600);
+
+      --accent-red: #ef4444;
+      --err: #ef4444;
+
+      --radius: 10px;
+      --radius-lg: 16px;
+
+      --shadow:    0 6px 22px -10px rgba(56, 189, 248, .22), 0 2px 6px rgba(56, 189, 248, .08);
+      --shadow-lg: 0 20px 56px -18px rgba(56, 189, 248, .32);
+
+      --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    body[data-theme='dark'] {
+      --bg:          #1a2742;
+      --bg-elev:     #21314f;
+      --border:      #34466b;
+      --border-soft: #2a3d5e;
+      --text:        #e6edf7;
+      --text-sub:    #aab4cc;
+      --text-muted:  #6e7a99;
+      --primary-soft: rgba(91, 143, 209, .15);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: var(--font-sans);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      background: var(--bg);
+      background-image:
+      radial-gradient(at 0% 0%,   #e0f7ff 0, transparent 52%),
+      radial-gradient(at 100% 0%, rgba(125, 211, 252, .26) 0, transparent 55%),
+      radial-gradient(at 50% 100%, rgba(56, 189, 248, .12) 0, transparent 58%);
+    }
+    body[data-theme='dark'] {
+      background-image:
+        radial-gradient(at 0% 0%,   rgba(37, 99, 235, .25) 0, transparent 55%),
+        radial-gradient(at 100% 0%, rgba(96, 165, 250, .15) 0, transparent 55%),
+        radial-gradient(at 50% 100%, rgba(30, 58, 138, .25) 0, transparent 55%);
+    }
+
+    .theme-toggle {
+      position: fixed; top: 18px; right: 22px;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--bg-elev); border: 1px solid var(--border);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--text-sub); transition: all .15s;
+      box-shadow: var(--shadow);
+    }
+    .theme-toggle:hover { color: var(--primary); border-color: var(--primary); }
+
+    .card {
+      width: 100%; max-width: 440px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 36px 36px 32px;
+      animation: pop-in .35s cubic-bezier(.22,1.2,.36,1) both;
+    }
+    @keyframes pop-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 34px;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px -6px rgba(37, 99, 235, .45);
+      flex-shrink: 0;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .title {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.05;
+      white-space: nowrap;
+    }
+
+    .title-main {
+      color: var(--text);
+    }
+
+    .title-login {
+      color: #ff335f;
+      text-shadow: 0 0 18px rgba(255, 51, 95, .32);
+    }
+
+    .subtitle { color: var(--text-muted); font-size: 12.5px; margin-top: 2px; }
+
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block; font-size: 11.5px; font-weight: 600;
+      color: var(--text-sub); margin-bottom: 6px; letter-spacing: .3px;
+    }
+    .input-wrap {
+      position: relative;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .input-wrap:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, .16);
+      background: var(--bg-elev);
+    }
+    .input-wrap input {
+      width: 100%; border: 0; outline: 0; background: transparent;
+      color: var(--text); font-size: 13.5px;
+      padding: 12px 14px 12px 38px; border-radius: var(--radius);
+      font-family: var(--font-mono);
+    }
+    .input-wrap input::placeholder { color: var(--text-muted); }
+    .input-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); width: 15px; height: 15px;
+    }
+
+    .hint {
+      font-size: 12px; color: var(--text-sub);
+      margin: 16px 0 22px;
+      padding: 10px 12px; border-radius: var(--radius);
+      background: var(--primary-soft);
+      border-left: 3px solid var(--primary);
+      line-height: 1.55;
+    }
+    .hint code {
+      background: var(--bg-elev);
+      padding: 1px 6px; border-radius: 4px;
+      font-size: 11px; color: var(--primary);
+      font-family: var(--font-mono);
+    }
+
+    .btn {
+      width: 100%; padding: 12px 14px;
+      background: var(--primary);
+      color: #fff; font-size: 14px; font-weight: 600;
+      border: 0; border-radius: var(--radius); cursor: pointer;
+      transition: background .15s, transform .1s, box-shadow .15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 6px 16px -5px rgba(56, 189, 248, .45);
+      font-family: var(--font-sans);
+    }
+    .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .err {
+      background: rgba(220, 38, 38, .08);
+      border: 1px solid rgba(220, 38, 38, .25);
+      color: var(--err);
+      padding: 9px 12px; border-radius: var(--radius);
+      font-size: 12.5px; margin-bottom: 14px;
+      animation: shake .3s;
+    }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)}
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="theme-toggle" aria-label="切换主题">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  </button>
+
+  <form class="card" id="login-form" autocomplete="off">
+    <div class="header">
+      <div class="logo">
+        <img src="./image/icon.webp" alt="NeoBot Logo">
+      </div>
+      <div>
+        <div class="title">
+          <span class="title-main">NeoBot</span>
+          <span class="title-login">Login</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="err" id="err" hidden></div>
+
+    <div class="field">
+      <label for="token">Access Token</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+        </svg>
+        <input id="token" name="token" type="password" required
+               placeholder="粘贴启动日志里的 Access Token" />
+      </div>
+    </div>
+    <button type="submit" class="btn" id="submit">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        <polyline points="10 17 15 12 10 7"/>
+        <line x1="15" y1="12" x2="3" y2="12"/>
+      </svg>
+      <span id="submit-text">登 录</span>
+    </button>
+  </form>
+
+  <script>
+    const THEME_KEY = 'neobot-dashboard-theme';
+    function applyTheme(t) {
+      document.documentElement.dataset.theme = t;
+      document.body.dataset.theme = t;
+    }
+    applyTheme(localStorage.getItem(THEME_KEY) ||
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+    document.getElementById('theme-toggle').onclick = () => {
+      const cur = document.documentElement.dataset.theme || 'light';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    };
+
+    // 已经有token就跳主页
+    const TOKEN_KEY = 'neobot-dashboard-token';
+    (async () => {
+      const t = localStorage.getItem(TOKEN_KEY);
+      if (!t) return;
+      try {
+        const r = await fetch('/api/auth/me', { headers: { 'X-Token': t } });
+        if (r.ok) location.replace('./');
+      } catch {}
+    })();
+
+    //登录
+    const form = document.getElementById('login-form');
+    const errEl = document.getElementById('err');
+    const btn = document.getElementById('submit');
+    const btnText = document.getElementById('submit-text');
+
+    function showError(msg) {
+      errEl.textContent = msg;
+      errEl.hidden = false;
+      btn.disabled = false;
+      btnText.textContent = '登 录';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errEl.hidden = true;
+      btn.disabled = true;
+      btnText.textContent = '验证中…';
+      const tokenInput = document.getElementById('token').value.trim();
+      if (!tokenInput) return showError('请输入 access_token');
+      try {
+        const r = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: tokenInput }),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok || !data.token) {
+          return showError(data.error || `登录失败 (HTTP ${r.status})`);
+        }
+        localStorage.setItem(TOKEN_KEY, data.token);
+        location.replace('./');
+      } catch (err) {
+        showError('网络错误:' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

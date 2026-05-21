@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeoBot 控制台</title>
+  <link rel="icon" type="image/webp" href="/favicon.ico?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+
+  <script>
+    //没token时跳登录页
+    (function() {
+      if (!localStorage.getItem('neobot-dashboard-token')) {
+        location.replace('./login.html');
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand" title="NeoBot" aria-label="NeoBot">
+      <img src="/image/licon.webp" alt="NeoBot Logo">
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-route="dashboard" data-tooltip="主页" aria-label="主页">
+        <!-- home -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+      </button>
+      <button class="nav-item" data-route="plugins" data-tooltip="插件" aria-label="插件">
+        <!-- puzzle -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4a2 2 0 1 0-4 0v2H6a2 2 0 0 0-2 2v4h2a2 2 0 1 1 0 4H4v4a2 2 0 0 0 2 2h4v-2a2 2 0 1 1 4 0v2h4a2 2 0 0 0 2-2v-4h-2a2 2 0 1 1 0-4h2V8a2 2 0 0 0-2-2h-4z"/></svg>
+      </button>
+      <button class="nav-item" data-route="bots" data-tooltip="机器人" aria-label="机器人">
+        <!-- bot -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 4v4"/><circle cx="12" cy="4" r="1"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 17h6"/></svg>
+      </button>
+      <button class="nav-item" data-route="logs" data-tooltip="日志" aria-label="日志">
+        <!-- log -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>
+      </button>
+    </nav>
+
+    <nav class="nav-bottom">
+      <button class="nav-item" data-tooltip="设置" aria-label="设置">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+      <button class="nav-item" id="nav-logout" data-tooltip="退出登录" aria-label="退出登录">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+      <button class="nav-item" data-tooltip="管理员" aria-label="用户">
+        <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#2563eb);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;">A</div>
+      </button>
+    </nav>
+  </aside>
+
+  <div class="main">
+
+    <header class="header">
+      <div class="crumbs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+        <span class="current">仪表盘</span>
+      </div>
+
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" placeholder="搜索插件、指令、配置…" />
+        <kbd>Ctrl K</kbd>
+      </div>
+
+      <button class="icon-btn" title="刷新">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+      </button>
+      <button class="icon-btn" title="主题">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <button class="icon-btn" title="通知">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+        <span class="badge-dot"></span>
+      </button>
+    </header>
+
+    <main class="content">
+
+      <section class="page active" data-page="dashboard">
+
+      <section class="hero fade-up">
+        <div class="hero-grid"></div>
+
+        <img
+          class="hero-bg-character"
+          src="./image/background.webp"
+          alt=""
+          aria-hidden="true"
+        >
+
+        <div class="hero-inner">
+          <h1>欢迎使用NeoBot</h1>
+          <p>NeoBot 正在运行。今日已处理 <b id="hero-today" style="font-weight:700">—</b> 条消息,共加载 <span id="hero-plugins">—</span> 个插件。</p>
+          <div class="hero-meta">
+            <span><i class="pulse"></i> 运行状态 <b id="hero-status">检查中</b></span>
+            <span>● 已运行 <b id="hero-uptime">—</b></span>
+            <span>● OneBot <b id="hero-app">—</b></span>
+            <span>● Python <b id="hero-python">—</b></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats">
+        <div class="stat-card fade-up">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4a2 2 0 1 0-4 0v2H6a2 2 0 0 0-2 2v4h2a2 2 0 1 1 0 4H4v4a2 2 0 0 0 2 2h4v-2a2 2 0 1 1 4 0v2h4a2 2 0 0 0 2-2v-4h-2a2 2 0 1 1 0-4h2V8a2 2 0 0 0-2-2h-4z"/></svg>
+          </div>
+          <div class="label">已加载插件</div>
+          <div class="value" id="stat-plugins">—</div>
+          <div class="delta" id="stat-plugins-sub">扫描中</div>
+        </div>
+
+        <div class="stat-card fade-up">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 4v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 17h6"/></svg>
+          </div>
+          <div class="label">机器人状态</div>
+          <div class="value" id="stat-bot">—</div>
+          <div class="delta" id="stat-bot-sub">查询中</div>
+        </div>
+
+        <div class="stat-card fade-up">
+          <div class="icon icon-accent">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.5-6.6L21 4l-1 4 1 4z"/></svg>
+          </div>
+          <div class="label">今日消息</div>
+          <div class="value" id="stat-today">—</div>
+          <div class="delta" id="stat-total-sub">累计 —</div>
+          <svg class="spark" id="spark-messages" viewBox="0 0 110 40" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--accent-red)"/>
+                <stop offset="100%" stop-color="var(--accent-red)" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path id="spark-area" d="" fill="url(#g1)" opacity=".22"/>
+            <path id="spark-line" d="" fill="none" stroke="var(--accent-red)" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="stat-card fade-up">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <div class="label">运行时长</div>
+          <div class="value" id="stat-uptime">—</div>
+          <div class="delta" id="stat-uptime-sub">—</div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <div class="card-head">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 4v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 17h6"/></svg>
+              机器人
+            </h3>
+            <a class="link" href="#/bots">查看全部 →</a>
+          </div>
+          <div class="bot-list" id="bot-list">
+            <div class="bot-row" style="opacity:.5">
+              <div class="bot-avatar" style="background:linear-gradient(135deg,#94a3b8,#64748b);">·</div>
+              <div class="bot-info">
+                <div class="name">加载中… <span class="status-pill off"><span class="dot"></span>—</span></div>
+                <div class="platform">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8"/></svg>
+              实时日志
+            </h3>
+            <a class="link" href="#/logs">查看更多</a>
+          </div>
+          <div class="logs" id="log-list">
+            <div class="log-row"><span class="time">--:--:--</span><span class="tag info">info</span><span class="msg">加载中…</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4a2 2 0 1 0-4 0v2H6a2 2 0 0 0-2 2v4h2a2 2 0 1 1 0 4H4v4a2 2 0 0 0 2 2h4v-2a2 2 0 1 1 4 0v2h4a2 2 0 0 0 2-2v-4h-2a2 2 0 1 1 0-4h2V8a2 2 0 0 0-2-2h-4z"/></svg>
+              已启用插件
+            </h3>
+            <a class="link" href="#/plugins">管理</a>
+          </div>
+          <div class="plugin-grid" id="plugin-grid">
+            <div class="plugin-chip off">
+              <div class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg></div>
+              <div>
+                <div class="pname">加载中…</div>
+                <div class="pver">—</div>
+              </div>
+              <span class="pdot"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+              系统信息
+            </h3>
+            <span style="font-size:11.5px;color:var(--text-muted);">实时</span>
+          </div>
+          <div class="sys">
+            <div class="sys-row">
+              <div class="sl"><span>CPU 使用率</span><span id="cpu-text">—</span></div>
+              <div class="bar"><i id="cpu-bar" style="width:0%"></i></div>
+            </div>
+            <div class="sys-row">
+              <div class="sl"><span>内存占用</span><span id="mem-text">—</span></div>
+              <div class="bar"><i id="mem-bar" style="width:0%"></i></div>
+            </div>
+            <div class="sys-row">
+              <div class="sl"><span>磁盘空间</span><span id="disk-text">—</span></div>
+              <div class="bar warn"><i id="disk-bar" style="width:0%"></i></div>
+            </div>
+            <dl class="sys-meta">
+              <div><dt>操作系统</dt><dd id="sys-os">—</dd></div>
+              <div><dt>主机名</dt><dd id="sys-host">—</dd></div>
+              <div><dt>Python 版本</dt><dd id="sys-python">—</dd></div>
+              <div><dt>启动时间</dt><dd id="sys-started">—</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        NeoBot
+      </div>
+
+      </section>
+
+
+      <section class="page" data-page="plugins">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">插件管理</h1>
+            <p class="page-sub">扫描自 <code id="plg-root-path">—</code>,共 <span id="plg-total">0</span> 个插件</p>
+          </div>
+          <div class="page-actions">
+            <div class="search-inline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                <circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/>
+              </svg>
+              <input id="plg-filter" type="text" placeholder="按名称/作者/路径过滤…" />
+            </div>
+            <select id="plg-sort" class="select">
+              <option value="name">按名称</option>
+              <option value="mtime">按更新时间</option>
+              <option value="size">按大小</option>
+            </select>
+            <button id="plg-check" class="btn-ghost" title="检查所有插件的远程版本">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                <path d="M22 12A10 10 0 0 1 12 22"/><path d="M12 2a10 10 0 0 1 10 10"/>
+                <path d="M2 12A10 10 0 0 1 12 2"/><path d="M12 22A10 10 0 0 1 2 12"/>
+              </svg>
+              检查更新
+            </button>
+            <button id="plg-install" class="btn-primary" title="从 GitHub 仓库安装插件">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                <path d="M5 12h14"/><path d="M12 5v14"/>
+              </svg>
+              从 GitHub 安装
+            </button>
+            <button id="plg-refresh" class="btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+                <path d="M21 3v5h-5"/><path d="M3 21v-5h5"/>
+              </svg>
+              刷新
+            </button>
+          </div>
+        </div>
+
+        <div class="plg-summary">
+          <div class="summary-pill">
+            <span class="dot ok"></span>已加载 <b id="plg-loaded">0</b>
+          </div>
+          <div class="summary-pill">
+            <span class="dot warn"></span>异常 <b id="plg-error">0</b>
+          </div>
+          <div class="summary-pill">
+            <span class="dot info"></span>含 manifest <b id="plg-with-toml">0</b>
+          </div>
+        </div>
+
+        <div class="plg-table-wrap">
+          <table class="plg-table">
+            <thead>
+              <tr>
+                <th style="width:36px"></th>
+                <th>名称</th>
+                <th style="width:160px">版本</th>
+                <th style="width:80px">类型</th>
+                <th style="width:90px">状态</th>
+                <th>描述 / 作者</th>
+                <th style="width:90px">是否启用</th>
+                <th style="width:140px">操作</th>
+                <th style="width:90px">大小</th>
+                <th style="width:140px">更新时间</th>
+              </tr>
+            </thead>
+            <tbody id="plg-tbody">
+              <tr><td colspan="10" class="plg-empty">加载中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+
+
+      <section class="page" data-page="bots">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">机器人</h1>
+            <p class="page-sub">单 bot 运行详情</p>
+          </div>
+        </div>
+
+        <div class="bot-detail-card" id="bot-detail-card">
+          <img id="bot-avatar" class="bot-avatar-lg" alt="" />
+          <div class="bot-detail-info">
+            <div class="bot-detail-name" id="bd-name">—</div>
+            <div class="bot-detail-meta">
+              <span class="status-pill" id="bd-status"><span class="dot"></span><span>—</span></span>
+              <span class="kv"><i>QQ</i><b id="bd-qq">—</b></span>
+              <span class="kv"><i>OneBot</i><b id="bd-onebot">—</b></span>
+              <span class="kv"><i>延迟</i><b id="bd-latency">—</b></span>
+              <span class="kv"><i>运行</i><b id="bd-uptime">—</b></span>
+            </div>
+          </div>
+          <div class="bot-detail-stats">
+            <div class="bd-stat"><div class="num" id="bd-today">—</div><div>今日消息</div></div>
+            <div class="bd-stat"><div class="num" id="bd-total">—</div><div>累计消息</div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>心跳延迟趋势</h3>
+            <div class="panel-sub" id="bd-latency-sub">最近 30 分钟,每 30 秒一次采样</div>
+          </div>
+          <div class="chart-box">
+            <svg id="latency-chart" viewBox="0 0 600 140" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="lg-area" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--blue-500)" stop-opacity=".25"/>
+                  <stop offset="100%" stop-color="var(--blue-500)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g id="latency-grid"></g>
+              <path id="latency-area" d="" fill="url(#lg-area)"/>
+              <path id="latency-line" d="" fill="none"
+                    stroke="var(--blue-500)" stroke-width="2"
+                    stroke-linejoin="round" stroke-linecap="round"/>
+              <g id="latency-points"></g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="grid-2-eq">
+          <div class="panel">
+            <div class="panel-head">
+              <h3>近 30 天消息</h3>
+              <div class="panel-sub" id="bd-msg-sub">—</div>
+            </div>
+            <div class="chart-box">
+              <svg id="msg-chart" viewBox="0 0 600 140" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="mg-area" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--ok)" stop-opacity=".25"/>
+                    <stop offset="100%" stop-color="var(--ok)" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <g id="msg-grid"></g>
+                <path id="msg-area" d="" fill="url(#mg-area)"/>
+                <path id="msg-line" d="" fill="none"
+                      stroke="var(--ok)" stroke-width="2"
+                      stroke-linejoin="round" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3>API 调用 TOP 10</h3>
+              <div class="panel-sub">
+                总计 <b id="bd-api-total">0</b> 次,涉及 <b id="bd-api-unique">0</b> 种
+              </div>
+            </div>
+            <ul class="bar-list" id="api-calls-list">
+              <li class="bar-empty">暂无数据</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>最近活跃用户 TOP 10</h3>
+            <div class="panel-sub">追踪自插件启动,共 <b id="bd-users-tracked">0</b> 人</div>
+          </div>
+          <ul class="user-list" id="active-users-list">
+            <li class="bar-empty">暂无数据</li>
+          </ul>
+        </div>
+
+      </section>
+
+
+
+      <section class="page" data-page="logs">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">日志</h1>
+            <p class="page-sub">拉取<span id="log-total">0</span> 条</p>
+          </div>
+          <div class="page-actions">
+            <div class="search-inline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                <circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/>
+              </svg>
+              <input id="log-filter" type="text" placeholder="搜索消息内容…" />
+            </div>
+            <select id="log-module" class="select">
+              <option value="">所有模块</option>
+            </select>
+            <button id="log-download" class="btn-ghost" title="下载当前显示的日志为 .log 文件">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>
+              </svg>
+              下载
+            </button>
+            <button id="log-clear" class="btn-ghost" title="清空浏览器中显示的日志(不影响服务端)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                <path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              </svg>
+              清屏
+            </button>
+          </div>
+        </div>
+
+        <div class="log-levels" id="log-levels">
+          <button class="level-pill active" data-level="info">  <span class="dot info"></span>info</button>
+          <button class="level-pill active" data-level="warn">  <span class="dot warn"></span>warning</button>
+          <button class="level-pill active" data-level="err">   <span class="dot err"></span>error</button>
+          <button class="level-pill active" data-level="ok">    <span class="dot ok"></span>success</button>
+        </div>
+
+        <div class="log-panel">
+          <div class="log-viewport" id="log-viewport"></div>
+          <div class="log-statusbar">
+            <div class="left">
+              <span>显示 <b id="log-shown">0</b> / 缓冲 <b id="log-buf">0</b></span>
+              <span id="log-paused-tip" class="paused-tip" hidden>
+                ⏸ 已暂停 · <b id="log-pending">0</b> 条新日志,
+                <a href="#" id="log-resume">跳到底部</a>
+              </span>
+            </div>
+            <div class="right">
+              <span id="log-last-time">—</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+
+  <dialog id="install-dialog" class="dlg">
+    <form method="dialog" id="install-form">
+      <div class="dlg-header">
+        <h3>从 GitHub 安装插件</h3>
+        <button type="button" class="dlg-close" data-close>&times;</button>
+      </div>
+      <div class="dlg-body">
+        <label class="field">
+          <span>GitHub 仓库</span>
+          <input id="install-repo" type="text" required
+                 placeholder="owner/repo 或 https://github.com/owner/repo" autocomplete="off" />
+          <small>例如:<code>example-user/awesome-neobot-plugin</code></small>
+        </label>
+        <label class="field">
+          <span>分支</span>
+          <input id="install-branch" type="text" value="main" />
+        </label>
+        <div class="dlg-tip">
+          请从你信任的仓库安装!
+        </div>
+      </div>
+      <div class="dlg-footer">
+        <button type="button" class="btn-ghost" data-close>取消</button>
+        <button type="submit" class="btn-primary" id="install-submit">下载并安装</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toasts" class="toasts"></div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
